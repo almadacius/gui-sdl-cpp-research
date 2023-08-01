@@ -1,7 +1,7 @@
 {
-  "name": "@almadash/static-server-cpp",
+  "name": "@almadash/gui-sdl-cpp-research",
   "description": "",
-  "version": "0.2.0",
+  "version": "0.0.1",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

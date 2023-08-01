@@ -1,24 +1,10 @@
-# Static server cpp
+# gui sdl cpp research
 
-researching the shape of a cpp project for supporting other projects.
+researching standalone gui apps.
 
-- based on `crow` library for webserver functionality
+- based on `sdl` library for low level os calls
 - based on js `@almadash/builder` for installation and build
 
 ---
 
-## crow
-
-- [github](https://github.com/CrowCpp/Crow.git)
-  + links
-    - [docs](https://crowcpp.org/master/)
-    - [SimpleApp](https://crowcpp.org/master/guides/app/)
-
-  + setup
-    - [setup](https://crowcpp.org/master/getting_started/setup/linux/)
-    - copy contents of `/include` into your project `include` dir
-    - in this case, `c_modules`
-
-  + depends on `Boost.asio.hpp`
-    - header-only, can be included individually
-    - [standalone](https://think-async.com/Asio/)
+Copyright 2023 Almadash
