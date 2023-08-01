@@ -52,7 +52,7 @@ class Operation {
 	async buildServer() {
 		const { srcDir } = project.paths
 
-		logger.logHeader('running main server')
+		logger.logHeader('running main')
 
 		const config = this.getBaseConfig()
 		const buildOp = new CppBuild2({
