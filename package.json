@@ -1,0 +1,29 @@
+{
+  "name": "@almadash/static-server-cpp",
+  "description": "",
+  "version": "0.2.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "==========================================================5": "",
+    "                      Run                                 5": "",
+    "==========================================================5b": "",
+    "deps": "node etc/scripts/install-deps.js",
+    "build": "node etc/scripts/build.js",
+    "start": "build/server public",
+    "dev": "yarn build && yarn start",
+    "==========================================================4": "",
+    "                      utils                               4": "",
+    "==========================================================4b": "",
+    "lint": "eslint --fix etc/scripts"
+  },
+  "dependencies": {
+    "@almadash/shelf": "git+ssh://git@bitbucket.org:almadash/shelf#0.11.2"
+  },
+  "devDependencies": {
+    "@almadash/shelf-node": "git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.19",
+    "@almadash/builder": "git+ssh://git@bitbucket.org:almadash/builder#0.3.0",
+    "@almadash/eslint-config-basic": "git+ssh://git@bitbucket.org:almadash/eslint-config-basic#1.1.5"
+  },
+  "author": "Almadash"
+}

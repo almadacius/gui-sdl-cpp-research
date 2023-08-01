@@ -1,0 +1,10 @@
+
+.DS_Store
+node_modules
+*.secret
+
+c_modules
+build
+temp
+
+yarn-*
