@@ -7,4 +7,11 @@ researching standalone gui apps.
 
 ---
 
+## links
+
+- [SDL2](https://wiki.libsdl.org/SDL2/FrontPage)
+  + [api](https://wiki.libsdl.org/SDL2/CategoryAPI)
+
+---
+
 Copyright 2023 Almadash

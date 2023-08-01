@@ -37,7 +37,7 @@ class Operation {
 		return {
 			version: cppVersion,
 			entrypoint: `${srcDir}/main.cpp`,
-			output: `${buildDir}/server`,
+			output: `${buildDir}/app`,
 
 			baseDir: rootDir,
 			srcDir,
