@@ -74,6 +74,8 @@ class Operation {
 			// await this.testCompile()
 		}
 
+		logger.logHeader('build complete')
+
 		process.exit(0)
 	}
 }

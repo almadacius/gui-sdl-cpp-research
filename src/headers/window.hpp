@@ -3,37 +3,41 @@
 #define T_WINDOW
 
 #include <SDL2/SDL.h>
+#include <string>
+
+#include "headers/renderer.hpp"
 
 using std::string;
 
 namespace sdl {
   // ================================================
+  /*
+    flags:
+      - SDL_WINDOWPOS_UNDEFINED
+      - SDL_WINDOWPOS_CENTERED
+  */
   struct WindowConfig {
-    char* title;
-    int x;
-    int y;
-    int width;
-    int height;
+    string title;
+    int x = 0;
+    int y = 0;
+    int width = 800;
+    int height = 600;
   };
 
   // ================================================
   class Window {
-    private:
+    public:
     const WindowConfig& config;
     SDL_Window* window;
+    Renderer* renderer;
 
-    public:
     Window(const WindowConfig& config);
     ~Window();
 
     // ================================================
     void create();
-
-    // @temp
-    void initSdl();
-    void quitSdl();
+    void createRenderer();
   };
 }
-
 
 #endif

@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
+
 #include "headers/sdl.hpp"
+#include "headers/window.hpp"
 
 using Sdl = sdl::Sdl;
 
@@ -49,42 +51,15 @@ void loop(SDL_Renderer* renderer) {
 // ================================================
 int main(int argc, char* argv[]) {
   Sdl* sdl = new Sdl();
-
   sdl->init();
 
-  // Create a window
-  // SDL_WINDOWPOS_UNDEFINED
-  // SDL_WINDOWPOS_CENTERED
-  SDL_Window* window = SDL_CreateWindow(
-    "Square Renderer",
-    0,
-    0,
-    800,
-    600,
-    SDL_WINDOW_SHOWN
-  );
-  if (window == NULL) {
-    SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
-    SDL_Quit();
-    return 1;
-  }
+  sdl::WindowConfig config;
+  config.title = "Square Renderer";
 
-  // Create a renderer
-  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-  if (renderer == NULL) {
-    SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    return 1;
-  }
+  sdl::Window* window = new sdl::Window(config);
+  window->create();
 
-  loop(renderer);
-
-  // Cleanup and quit
-  SDL_DestroyWindow(window);
-  SDL_DestroyRenderer(renderer);
-
-  sdl->quit();
+  loop(window->renderer->renderer);
 
   return 0;
 }

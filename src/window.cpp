@@ -1,35 +1,48 @@
 #include <SDL2/SDL.h>
-#include "window.hpp"
 
-sdl::Window::Window(const WindowConfig& config) {
-  this->config = config;
-}
+#include "headers/sdl.hpp"
+#include "headers/renderer.hpp"
+#include "headers/window.hpp"
 
-sdl::Window::~Window() {
-  SDL_DestroyWindow(this->window);
-}
+using Sdl = sdl::Sdl;
 
 // ================================================
-void sdl::Window::create() {
-  WindowConfig* config = this->config;
+namespace sdl {
+  Window::Window(const WindowConfig& config) : config(config) {}
 
-  uint32 flags = 0;
-  flags = SDL_WINDOW_SHOWN;
+  Window::~Window() {
+    SDL_DestroyWindow(this->window);
+  }
 
-  this->window = SDL_CreateWindow(
-    config.title,
-    config.x,
-    config.y,
-    config.width,
-    config.height,
-    flags
-  );
-}
+  // ================================================
+  void Window::createRenderer() {
+    Renderer* renderer = new Renderer();
+    this->renderer = renderer;
 
-void sdl::Window::initSdl() {
-  SDL_Init(SDL_INIT_VIDEO);
-}
+    renderer->create(this->window);
+  }
 
-void sdl::Window::quitSdl() {
-  SDL_Quit();
+  void Window::create() {
+    const WindowConfig& config = this->config;
+
+    Uint32 flags = 0;
+    flags = SDL_WINDOW_SHOWN;
+
+    this->window = SDL_CreateWindow(
+      config.title.c_str(),
+      config.x,
+      config.y,
+      config.width,
+      config.height,
+      flags
+    );
+
+    // @todo - throw
+    if (this->window == NULL) {
+      Sdl* sdl = new Sdl();
+      sdl->logError("SDL_CreateWindow Error: %s\n");
+    }
+
+    this->createRenderer();
+  }
 }
