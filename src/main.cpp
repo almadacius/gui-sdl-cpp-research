@@ -1,4 +1,7 @@
 #include <SDL2/SDL.h>
+#include "headers/sdl.hpp"
+
+using Sdl = sdl::Sdl;
 
 // ================================================
 void drawSquare(SDL_Renderer* renderer) {
@@ -45,11 +48,9 @@ void loop(SDL_Renderer* renderer) {
 
 // ================================================
 int main(int argc, char* argv[]) {
-  // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-    SDL_Log("SDL_Init Error: %s\n", SDL_GetError());
-    return 1;
-  }
+  Sdl* sdl = new Sdl();
+
+  sdl->init();
 
   // Create a window
   // SDL_WINDOWPOS_UNDEFINED
@@ -82,7 +83,8 @@ int main(int argc, char* argv[]) {
   // Cleanup and quit
   SDL_DestroyWindow(window);
   SDL_DestroyRenderer(renderer);
-  SDL_Quit();
+
+  sdl->quit();
 
   return 0;
 }

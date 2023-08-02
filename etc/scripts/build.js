@@ -38,6 +38,13 @@ class Operation {
 		await buildOp.build()
 	}
 
+	async testCompile() {
+		logger.logHeader('test compile')
+
+		const buildOp = this.createOp().verbose()
+		await buildOp.dry()
+	}
+
 	// ================================================
 	async buildTestStr() {
 		const { srcDir } = project.paths
@@ -64,6 +71,7 @@ class Operation {
 		}
 		else {
 			await this.buildApp()
+			// await this.testCompile()
 		}
 
 		process.exit(0)
