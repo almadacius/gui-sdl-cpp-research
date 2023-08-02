@@ -5,7 +5,11 @@
 #include <SDL2/SDL.h>
 #include <string>
 
+#include "headers/color.hpp"
+
+// ================================================
 using std::string;
+using std::function;
 
 namespace sdl {
   // ================================================
@@ -35,6 +39,13 @@ namespace sdl {
 
     // ================================================
     void create(SDL_Window* window);
+
+    void clear();
+    void render();
+
+    void setColor(Color* color);
+
+    void loop(function<void()> handler);
   };
 }
 

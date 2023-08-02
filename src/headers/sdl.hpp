@@ -18,6 +18,7 @@ namespace sdl {
     void quit();
 
     void logError(string message);
+    void delay(int seconds);
   };
 
 }

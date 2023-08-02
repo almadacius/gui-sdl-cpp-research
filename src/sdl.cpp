@@ -10,9 +10,15 @@ namespace sdl {
     this->quit();
   }
 
+  // ================================================
   void Sdl::logError(string message) {
     const char* msg = message.c_str();
     SDL_Log(msg, SDL_GetError());
+  }
+
+  void Sdl::delay(int seconds) {
+    int delay = seconds * 1000;
+    SDL_Delay(delay);
   }
 
   // ================================================
