@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { CppBuild, CppBuild2 } = require('@almadash/builder')
+const { CppBuild } = require('@almadash/builder')
 const {
 	errorHandler: { NodeErrorHandler },
 	logger: { simpleLogger: logger },
@@ -10,55 +10,31 @@ const { project } = require('./lib')
 
 // ================================================
 class Operation {
-	async buildProjectLegacy() {
+	createOp() {
 		const { cppVersion } = project
-		const { srcDir, rootDir, buildDir, modulesDir } = project.paths
+		const { rootDir, srcDir, buildDir } = project.paths
 
-		const buildOp = new CppBuild({
-			baseDir: rootDir,
-			// baseDir: srcDir,
-			version: cppVersion,
-			srcDir,
-			output: `${buildDir}/server`,
-			includes: [
-				srcDir,
-				modulesDir,
-			],
-			// modulesDir: `${rootDir}/temp/local_modules`,
-		})
-		await buildOp.build()
+		const config = new CppBuild.Config()
+			.version(cppVersion)
+			.rootDir(rootDir)
+			.entrypoint(`${srcDir}/main.cpp`)
+			.output(`${buildDir}/app`)
+
+		const op = new CppBuild({ config })
+
+		// SDL2
+		config.addInclude('/usr/local/include')
+		op.cmdBuilder.addParam('L', '/usr/local/lib')
+		op.cmdBuilder.addParam('l', 'SDL2')
+
+		return op
 	}
 
 	// ================================================
-	getBaseConfig() {
-		const { cppVersion } = project
-		const { rootDir, srcDir, buildDir, modulesDir } = project.paths
+	async buildApp() {
+		logger.logHeader('build app')
 
-		return {
-			version: cppVersion,
-			entrypoint: `${srcDir}/main.cpp`,
-			output: `${buildDir}/app`,
-
-			baseDir: rootDir,
-			srcDir,
-			headerDir: srcDir,
-			includes: [
-				modulesDir,
-			],
-		}
-	}
-
-	// ================================================
-	async buildServer() {
-		const { srcDir } = project.paths
-
-		logger.logHeader('running main')
-
-		const config = this.getBaseConfig()
-		const buildOp = new CppBuild2({
-			...config,
-			entrypoint: `${srcDir}/main.cpp`,
-		})
+		const buildOp = this.createOp()
 		await buildOp.build()
 	}
 
@@ -68,24 +44,9 @@ class Operation {
 
 		logger.logHeader('running test <str>')
 
-		const config = this.getBaseConfig()
-		const buildOp = new CppBuild2({
-			...config,
-			entrypoint: `${srcDir}/test/testStr.cpp`,
-		})
-		await buildOp.build()
-	}
+		const buildOp = this.createOp()
+		buildOp.config.entrypoint(`${srcDir}/test/testStr.cpp`)
 
-	async buildTestFs() {
-		const { srcDir } = project.paths
-
-		logger.logHeader('running test <fs>')
-
-		const config = this.getBaseConfig()
-		const buildOp = new CppBuild2({
-			...config,
-			entrypoint: `${srcDir}/test/testFs.cpp`,
-		})
 		await buildOp.build()
 	}
 
@@ -99,12 +60,10 @@ class Operation {
 		const useTest = false
 
 		if (useTest) {
-			// await this.buildProjectLegacy()
-			// await this.buildTestStr()
-			await this.buildTestFs()
+			await this.buildTestStr()
 		}
 		else {
-			await this.buildServer()
+			await this.buildApp()
 		}
 
 		process.exit(0)

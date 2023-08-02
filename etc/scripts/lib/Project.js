@@ -11,6 +11,7 @@ class Project {
 				rootDir: nodePath.resolve(`${__dirname}/../../..`),
 			}),
 			paths => ({
+				testDir: `${paths.rootDir}/_tests-unit`,
 				srcDir: `${paths.rootDir}/src`,
 				modulesDir: `${paths.rootDir}/c_modules`,
 				buildDir: `${paths.rootDir}/build`,
