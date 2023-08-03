@@ -3,6 +3,7 @@
 #define T_COLOR
 
 #include <SDL2/SDL.h>
+#include <map>
 
 namespace sdl {
 
@@ -17,7 +18,6 @@ namespace sdl {
     Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
     Color(Uint8 r, Uint8 g, Uint8 b);
   };
-
 }
 
 #endif

@@ -1,8 +1,10 @@
+#include <map>
 #include <SDL2/SDL.h>
 
 #include "headers/sdl.hpp"
 #include "headers/window.hpp"
 #include "headers/color.hpp"
+#include "headers/colors.hpp"
 
 using Sdl = sdl::Sdl;
 using Color = sdl::Color;
@@ -20,13 +22,18 @@ int main(int argc, char* argv[]) {
 
   sdl::Renderer* renderer = window->renderer;
   renderer->loop([renderer](){
-    renderer->setColor(new Color(200, 0, 0));
+    using sdl::colors;
+
+    renderer->setColor(colors["white"]);
     renderer->clear();
 
-    renderer->setColor(new Color(0, 0, 0));
-    // Draw a square
+    renderer->setColor(colors["cyan"]);
     SDL_Rect rect = { 200, 150, 100, 100 };
     SDL_RenderFillRect(renderer->renderer, &rect);
+
+    renderer->setColor(colors["yellow"]);
+    SDL_Rect rect2 = { 400, 150, 100, 100 };
+    SDL_RenderFillRect(renderer->renderer, &rect2);
   });
 
   return 0;
