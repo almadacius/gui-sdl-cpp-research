@@ -9,6 +9,8 @@
 using Sdl = sdl::Sdl;
 using Color = sdl::Color;
 
+using sdl::colors;
+
 // ================================================
 int main(int argc, char* argv[]) {
   Sdl* sdl = new Sdl();
@@ -22,7 +24,6 @@ int main(int argc, char* argv[]) {
 
   sdl::Renderer* renderer = window->renderer;
   renderer->loop([renderer](){
-    using sdl::colors;
 
     renderer->setColor(colors["white"]);
     renderer->clear();
@@ -34,6 +35,13 @@ int main(int argc, char* argv[]) {
     renderer->setColor(colors["yellow"]);
     SDL_Rect rect2 = { 400, 150, 100, 100 };
     SDL_RenderFillRect(renderer->renderer, &rect2);
+
+    renderer->setColor(colors["black"]);
+    SDL_Rect rect3 = { 450, 150, 100, 100 };
+    SDL_RenderDrawRect(renderer->renderer, &rect3);
+
+    SDL_Rect rect4 = { 451, 151, 98, 98 };
+    SDL_RenderDrawRect(renderer->renderer, &rect4);
   });
 
   return 0;
