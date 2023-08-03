@@ -10,17 +10,27 @@ const { fsShelf } = require('@almadash/shelf-node')
 const { project } = require('./Project')
 
 // ================================================
-class InstallAsioOperation {
+/* @info
+	- archive based install
+	- @partial
+		+ this is the source for compiling
+		+ I want the precompiled
+	- macOs
+		+ artifact size: 13.16 Mb
+		+ size after extraction: 41.34 Mb
+*/
+class InstallSdlTtfCompileOp {
 	constructor() {
 		const { tempDir, modulesDir } = project.paths
 
-		const archiveFile = `${tempDir}/asio-1.28.0.tar.bz2`
-		const packageDir = `${tempDir}/asio-1.28.0`
+		const baseName = 'SDL2_ttf-2.20.2'
+		const archiveFile = `${tempDir}/${baseName}.tar.gz`
+		const packageDir = `${tempDir}/${baseName}`
 
 		const includeDir = `${packageDir}/include`
 		const keyLinkedFile = `${modulesDir}/asio.hpp`
 
-		const srcUrl = 'https://sourceforge.net/projects/asio/files/asio/1.28.0%20%28Stable%29/asio-1.28.0.tar.bz2/download'
+		const srcUrl = 'https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.20.2/SDL2_ttf-2.20.2.tar.gz'
 
 		Object.assign(this, {
 			archiveFile,
@@ -77,7 +87,7 @@ class InstallAsioOperation {
 		logger.logHeader('package dir does NOT exist, DO extract')
 
 		const tar = new Tar({ baseDir: tempDir })
-		await tar.extractBzip2({
+		await tar.extractGz({
 			filepath: archiveFile,
 		})
 	}
@@ -112,8 +122,8 @@ class InstallAsioOperation {
 	async install() {
 		await this.download()
 		await this.extract()
-		await this.link()
+		// await this.link()
 	}
 }
 
-module.exports = { InstallAsioOperation }
+module.exports = { InstallSdlTtfCompileOp }

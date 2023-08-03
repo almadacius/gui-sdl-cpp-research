@@ -4,7 +4,7 @@
 */
 
 module.exports = {
-	...require('./InstallAsioOperation'),
-	...require('./InstallCrowOp'),
+	...require('./InstallSdlTtfCompileOp'),
+	...require('./InstallSdlTtfOp'),
 	...require('./Project'),
 }

@@ -15,10 +15,9 @@ class Project {
 				srcDir: `${paths.rootDir}/src`,
 				modulesDir: `${paths.rootDir}/c_modules`,
 				buildDir: `${paths.rootDir}/build`,
-				tempBaseDir: `${paths.rootDir}/temp`,
 			}),
 			paths => ({
-				tempDir: `${paths.tempBaseDir}/c_modules`,
+				tempDir: `${paths.modulesDir}/_temp`,
 			}),
 		)
 
