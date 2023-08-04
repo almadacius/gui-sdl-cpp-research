@@ -18,6 +18,7 @@ class Project {
 			}),
 			paths => ({
 				tempDir: `${paths.modulesDir}/_temp`,
+				frameworksDir: `${paths.modulesDir}/frameworks`,
 			}),
 		)
 
@@ -28,11 +29,13 @@ class Project {
 	}
 
 	ensureDirs() {
-		const { modulesDir, buildDir, tempDir } = this.paths
+		const { modulesDir, buildDir, tempDir, frameworksDir } = this.paths
+
+		fsShelf.ensureDir(buildDir)
 
 		fsShelf.ensureDir(modulesDir)
-		fsShelf.ensureDir(buildDir)
 		fsShelf.ensureDir(tempDir)
+		fsShelf.ensureDir(frameworksDir)
 	}
 }
 

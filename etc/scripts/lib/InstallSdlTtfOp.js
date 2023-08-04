@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { Tar, CopyFiles, DownloadArtifact } = require('@almadash/builder')
+const { Dmg, CopyFiles, DownloadArtifact } = require('@almadash/builder')
 const {
 	BusinessError,
 	logger: { simpleLogger: logger },
@@ -10,108 +10,110 @@ const { fsShelf } = require('@almadash/shelf-node')
 const { project } = require('./Project')
 
 // ================================================
+/* @info usage
+	#include <SDL2_ttf/SDL_ttf.h>
+*/
 /* @info
 	- this is the precompiled for macOs
 	- archive based install
 	- macOs
 		+ artifact size: 1.6 Mb
-		+ size after extraction: 41.34 Mb
+		+ size after extraction: 3.5 Mb
 */
 class InstallSdlTtfOp {
 	constructor() {
-		const { tempDir, modulesDir } = project.paths
+		const { tempDir } = project.paths
 
 		const baseName = 'SDL2_ttf-2.20.2'
-		const archiveFile = `${tempDir}/${baseName}.dmg`
-		const packageDir = `${tempDir}/${baseName}`
-
-		const includeDir = `${packageDir}/include`
-		const keyLinkedFile = `${modulesDir}/asio.hpp`
+		const mountpoint = `${tempDir}/${baseName}-mounted`
+		const extractDir = `${tempDir}/${baseName}`
 
 		const artifactDownload = new DownloadArtifact({
 			url: 'https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.20.2/SDL2_ttf-2.20.2.dmg',
-			filepath: archiveFile,
+			filepath: `${tempDir}/${baseName}.dmg`,
 			dry: false,
 		})
 
 		Object.assign(this, {
-			archiveFile,
-			packageDir,
+			mountpoint,
+			extractDir,
 			artifactDownload,
-			includeDir,
-			keyLinkedFile,
 		})
-	}
-
-	// ================================================
-	hasArchive() {
-		const { archiveFile } = this
-		return fsShelf.exists(archiveFile)
-	}
-
-	hasLinkedFile() {
-		const { keyLinkedFile } = this
-		return fsShelf.exists(keyLinkedFile)
 	}
 
 	// ================================================
 	async download() {
 		const { artifactDownload } = this
+		logger.logHeaderBold('download')
 		await artifactDownload.download()
 	}
 
 	async extract() {
-		const { archiveFile, packageDir } = this
+		const { mountpoint, extractDir, artifactDownload } = this
 		const { tempDir } = project.paths
 
-		if (!this.hasArchive()) {
-			throw new BusinessError('archive not found')
+		logger.logHeaderBold('extract')
+		if (!artifactDownload.fileExists()) {
+			throw new BusinessError('archive NOT found')
 		}
-		logger.logHeader('archive found')
 
-		if (fsShelf.exists(packageDir) && fsShelf.isDirectory(packageDir)) {
-			logger.logHeader('package dir already exists, SKIP extract')
+		if (fsShelf.dirExists(extractDir)) {
+			logger.logHeader('package dir found, SKIP extract')
 			return
 		}
-		logger.logHeader('package dir does NOT exist, DO extract')
+		logger.logHeader('package dir NOT found, DO extract')
 
-		const tar = new Tar({ baseDir: tempDir })
-		await tar.extractGz({
-			filepath: archiveFile,
+		const dmg = new Dmg({
+			baseDir: tempDir,
+			targetDir: mountpoint,
+			filepath: artifactDownload.filepath,
 		})
+		await dmg.mount()
+
+		fsShelf.ensureDir(extractDir)
+		const copyFiles = new CopyFiles({
+			baseDir: mountpoint,
+			destDir: extractDir,
+		})
+		await copyFiles.run()
+
+		await dmg.unmount()
 	}
 
 	/*
 		@info
 		- copy `/include/*` into `modulesDir` for actual use
 	*/
+	/* @info
+		export CFLAGS="-I/path/to/sdl_ttf_framework/Headers $CFLAGS"
+		export LDFLAGS="-F/path/to/sdl_ttf_framework -framework SDL2_ttf $LDFLAGS"
+	*/
 	async link() {
-		const { includeDir } = this
-		const { modulesDir } = project.paths
+		const { extractDir } = this
+		const { frameworksDir } = project.paths
 
-		if (this.hasLinkedFile()) {
-			logger.logHeader('key linked file found, SKIP linking')
+		logger.logHeaderBold('link')
+		const dirname = 'SDL2_ttf.framework'
+		const destDir = `${frameworksDir}/${dirname}`
+
+		if (fsShelf.dirExists(destDir)) {
+			logger.logHeader('dest dir found, SKIP linking')
 			return
 		}
-		logger.logHeader('key linked file NOT found, linking')
+		logger.logHeader('dest dir NOT found, linking')
 
 		const copyFiles = new CopyFiles({
-			baseDir: includeDir,
-			destDir: modulesDir,
+			baseDir: `${extractDir}/${dirname}`,
+			destDir,
 		})
-		const filePaths = await copyFiles.globFiles({
-			excludePatterns: [
-				/^Makefile/,
-			],
-		})
-		await copyFiles.copyFiles(filePaths)
+		await copyFiles.run()
 	}
 
 	// ================================================
 	async install() {
 		await this.download()
-		// await this.extract()
-		// await this.link()
+		await this.extract()
+		await this.link()
 	}
 }
 
