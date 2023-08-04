@@ -12,7 +12,7 @@ const { project } = require('./lib')
 class Operation {
 	createOp() {
 		const { cppVersion } = project
-		const { rootDir, srcDir, buildDir } = project.paths
+		const { rootDir, srcDir, buildDir, frameworksDir } = project.paths
 
 		const config = new CppBuild.Config()
 			.version(cppVersion)
@@ -26,6 +26,12 @@ class Operation {
 		config.addInclude('/usr/local/include')
 		op.cmdBuilder.addParam('L', '/usr/local/lib')
 		op.cmdBuilder.addParam('l', 'SDL2')
+
+		// SDL2_ttf
+		const sdlTtf = `${frameworksDir}/SDL2_ttf.framework`
+		config.addInclude(`${sdlTtf}/Versions/A/Headers`)
+		op.cmdBuilder.addParam('F', sdlTtf)
+		op.cmdBuilder.addParam('framework', 'SDL2_ttf')
 
 		return op
 	}
