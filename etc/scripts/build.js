@@ -4,15 +4,29 @@ const { CppBuild } = require('@almadash/builder')
 const {
 	errorHandler: { NodeErrorHandler },
 	logger: { simpleLogger: logger },
+	BusinessException,
 } = require('@almadash/shelf')
+const { dep, fsShelf } = require('@almadash/shelf-node')
 
 const { project } = require('./lib')
 
 // ================================================
 class Operation {
-	createOp() {
+	createOp(options) {
 		const { cppVersion } = project
 		const { rootDir, srcDir, buildDir, frameworksDir } = project.paths
+
+		let useSdl = false
+		let useSdlTtf = false
+
+		if (options) {
+			useSdl = options.useSdl
+			useSdlTtf = options.useSdlTtf
+		}
+		else {
+			useSdl = true
+			useSdlTtf = true
+		}
 
 		const config = new CppBuild.Config()
 			.version(cppVersion)
@@ -22,16 +36,20 @@ class Operation {
 
 		const op = new CppBuild({ config })
 
-		// SDL2
-		config.addInclude('/usr/local/include')
-		op.cmdBuilder.addParam('L', '/usr/local/lib')
-		op.cmdBuilder.addParam('l', 'SDL2')
+		if (useSdl) {
+			// SDL2
+			config.addInclude('/usr/local/include')
+			op.cmdBuilder.addParam('L', '/usr/local/lib')
+			op.cmdBuilder.addParam('l', 'SDL2')
+		}
 
-		// SDL2_ttf
-		const sdlTtf = `${frameworksDir}/SDL2_ttf.framework`
-		config.addInclude(`${sdlTtf}/Versions/A/Headers`)
-		op.cmdBuilder.addParam('F', sdlTtf)
-		op.cmdBuilder.addParam('framework', 'SDL2_ttf')
+		if (useSdlTtf) {
+			// SDL2_ttf
+			const sdlTtf = `${frameworksDir}/SDL2_ttf.framework`
+			config.addInclude(`${sdlTtf}/Versions/A/Headers`)
+			op.cmdBuilder.addParam('F', sdlTtf)
+			op.cmdBuilder.addParam('framework', 'SDL2_ttf')
+		}
 
 		return op
 	}
@@ -52,13 +70,23 @@ class Operation {
 	}
 
 	// ================================================
-	async buildTestStr() {
-		const { srcDir } = project.paths
+	async buildTest(testName) {
+		const { testDir } = project.paths
 
-		logger.logHeader('running test <str>')
+		const testFile = `${testDir}/${testName}.cpp`
+		if (!fsShelf.exists(testFile)) {
+			throw new BusinessException(`test NOT found: ${testName}`)
+		}
 
-		const buildOp = this.createOp()
-		buildOp.config.entrypoint(`${srcDir}/test/testStr.cpp`)
+		let buildOp = this.createOp()
+		if (testName === 'test-sdl') {
+			buildOp = this.createOp({ useSdl: true })
+		}
+		if (testName === 'test-sdl-ttf') {
+			buildOp = this.createOp({ useSdl: true, useSdlTtf: true })
+		}
+
+		buildOp.config.entrypoint(testFile)
 
 		await buildOp.build()
 	}
@@ -70,14 +98,24 @@ class Operation {
 
 		project.ensureDirs()
 
-		const useTest = false
+		let data = { entry: 'main' }
+		dep.whenAvailable(`${__dirname}/config.local.js`, localConfig => {
+			logger.logHeader('local config FOUND')
+			data = localConfig
+		})
 
-		if (useTest) {
-			await this.buildTestStr()
-		}
-		else {
+		const { entry } = data
+
+		if (entry === 'main') {
 			await this.buildApp()
-			// await this.testCompile()
+		}
+		else if (entry === 'testCompile') {
+			await this.testCompile()
+		}
+		else if (entry === 'test') {
+			const { testName = 'sdl' } = data
+			logger.logHeader(`building test: '${testName}'`)
+			await this.buildTest(testName)
 		}
 
 		logger.logHeader('build complete')
