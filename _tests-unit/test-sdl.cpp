@@ -2,9 +2,8 @@
 
 // ================================================
 void drawSquare(SDL_Renderer* renderer) {
-  // Set the draw color (red in this case)
+  // red
   SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
   // Clear the window
   SDL_RenderClear(renderer);
 
@@ -13,16 +12,9 @@ void drawSquare(SDL_Renderer* renderer) {
   SDL_RenderFillRect(renderer, &rect);
 }
 
-void runDelay(int secs) {
-  // Wait for a short moment
-  int delay = secs * 1000;
-  SDL_Delay(delay);
-}
-
 void loop(SDL_Renderer* renderer) {
   bool isRunning = true;
 
-  // Infinite loop
   while(isRunning) {
     SDL_Event event;
 
@@ -32,6 +24,8 @@ void loop(SDL_Renderer* renderer) {
       }
     }
 
+    // white
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     // Clear screen
     SDL_RenderClear(renderer);
 
@@ -52,8 +46,6 @@ int main(int argc, char* argv[]) {
   }
 
   // Create a window
-  // SDL_WINDOWPOS_UNDEFINED
-  // SDL_WINDOWPOS_CENTERED
   SDL_Window* window = SDL_CreateWindow(
     "Square Renderer",
     0,

@@ -11,7 +11,7 @@ function main () {
 
   local dist="$projRoot/build/app"
 
-  g++ "base-sample.cpp" \
+  g++ "test-sdl.cpp" \
     -o "$dist" \
     -std=c++11 \
     -I "/usr/local/include" \
