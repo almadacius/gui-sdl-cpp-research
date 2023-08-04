@@ -19,10 +19,10 @@
     "lint": "eslint --fix etc/scripts"
   },
   "dependencies": {
-    "@almadash/shelf": "git+ssh://git@bitbucket.org:almadash/shelf#0.11.2"
+    "@almadash/shelf": "git+ssh://git@bitbucket.org:almadash/shelf#0.12.0"
   },
   "devDependencies": {
-    "@almadash/shelf-node": "git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.19",
+    "@almadash/shelf-node": "git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.20",
     "@almadash/builder": "git+ssh://git@bitbucket.org:almadash/builder#0.3.0",
     "@almadash/eslint-config-basic": "git+ssh://git@bitbucket.org:almadash/eslint-config-basic#1.1.5"
   },

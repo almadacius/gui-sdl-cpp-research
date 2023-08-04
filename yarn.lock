@@ -30,6 +30,14 @@
     glob "^7.1.6"
     semver "^7.3.2"
 
+"@almadash/shelf-node@git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.20":
+  version "0.8.20"
+  resolved "git+ssh://git@bitbucket.org:almadash/shelf-node#b6bebef03211770bbd92fdc8438488b6e54dfd1d"
+  dependencies:
+    "@almadash/shelf" "git+ssh://git@bitbucket.org:almadash/shelf#0.11.11"
+    glob "^7.1.6"
+    semver "^7.3.2"
+
 "@almadash/shelf@git+ssh://git@bitbucket.org:almadash/shelf#0.11.1":
   version "0.11.1"
   resolved "git+ssh://git@bitbucket.org:almadash/shelf#7f08446104b0ff8918d0c706267c92e0b45f2fc8"
@@ -42,9 +50,9 @@
   dependencies:
     glob "^7.1.6"
 
-"@almadash/shelf@git+ssh://git@bitbucket.org:almadash/shelf#0.11.2":
-  version "0.11.2"
-  resolved "git+ssh://git@bitbucket.org:almadash/shelf#cff9a5bc42a0753f1c82f1cf6628c1b493528569"
+"@almadash/shelf@git+ssh://git@bitbucket.org:almadash/shelf#0.12.0":
+  version "0.12.0"
+  resolved "git+ssh://git@bitbucket.org:almadash/shelf#c89e818f73252fe51aea70be6f139b2f8ddbf183"
   dependencies:
     glob "^7.1.6"
 
