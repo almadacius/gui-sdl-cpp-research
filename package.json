@@ -11,7 +11,7 @@
     "deps": "node etc/scripts/install-deps.js",
     "build:raw": "bash etc/scripts/build-raw.sh",
     "build": "node etc/scripts/build.js",
-    "start": "build/app",
+    "start": "bash etc/scripts/run.sh",
     "dev": "yarn build && yarn start",
     "==========================================================4": "",
     "                      utils                               4": "",

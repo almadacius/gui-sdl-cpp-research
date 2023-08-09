@@ -53,7 +53,7 @@ class InstallSdlTtfOp {
 		const { tempDir } = project.paths
 
 		logger.logHeaderBold('extract')
-		if (!artifactDownload.fileExists()) {
+		if (!artifactDownload.exists()) {
 			throw new BusinessError('archive NOT found')
 		}
 
@@ -70,10 +70,12 @@ class InstallSdlTtfOp {
 		})
 		await dmg.mount()
 
+		// ================================================
 		fsShelf.ensureDir(extractDir)
 		const copyFiles = new CopyFiles({
 			baseDir: mountpoint,
 			destDir: extractDir,
+			dry: false,
 		})
 		await copyFiles.run()
 
@@ -93,6 +95,7 @@ class InstallSdlTtfOp {
 		const { frameworksDir } = project.paths
 
 		logger.logHeaderBold('link')
+
 		const dirname = 'SDL2_ttf.framework'
 		const destDir = `${frameworksDir}/${dirname}`
 
@@ -105,6 +108,7 @@ class InstallSdlTtfOp {
 		const copyFiles = new CopyFiles({
 			baseDir: `${extractDir}/${dirname}`,
 			destDir,
+			dry: false,
 		})
 		await copyFiles.run()
 	}

@@ -34,22 +34,28 @@ class Operation {
 			.entrypoint(`${srcDir}/main.cpp`)
 			.output(`${buildDir}/app`)
 
-		const op = new CppBuild({ config })
+		const op = new CppBuild({
+			config,
+			onCreateCmd(cmdBuilder) {
+				if (useSdl) {
+					// SDL2
+					config.addInclude('/usr/local/include')
+					cmdBuilder.addParam('L', '/usr/local/lib')
+					cmdBuilder.addParam('l', 'SDL2')
+				}
 
-		if (useSdl) {
-			// SDL2
-			config.addInclude('/usr/local/include')
-			op.cmdBuilder.addParam('L', '/usr/local/lib')
-			op.cmdBuilder.addParam('l', 'SDL2')
-		}
+				if (useSdlTtf) {
+					// SDL2_ttf
+					const sdlTtf = `${frameworksDir}/SDL2_ttf.framework`
+					config.addInclude(`${sdlTtf}/Headers`)
 
-		if (useSdlTtf) {
-			// SDL2_ttf
-			const sdlTtf = `${frameworksDir}/SDL2_ttf.framework`
-			config.addInclude(`${sdlTtf}/Versions/A/Headers`)
-			op.cmdBuilder.addParam('F', sdlTtf)
-			op.cmdBuilder.addParam('framework', 'SDL2_ttf')
-		}
+					// when fully symlinked, the framework can be used like this
+					// frameworks are specific to macOs
+					cmdBuilder.addParam('F', frameworksDir)
+					cmdBuilder.addParam('framework', 'SDL2_ttf')
+				}
+			},
+		})
 
 		return op
 	}
@@ -88,6 +94,7 @@ class Operation {
 
 		buildOp.config.entrypoint(testFile)
 
+		buildOp.dry()
 		await buildOp.build()
 	}
 
