@@ -12,6 +12,7 @@
     "build:raw": "bash etc/scripts/build-raw.sh",
     "build": "node etc/scripts/build.js",
     "start": "bash etc/scripts/run.sh",
+    "debug": "bash etc/scripts/debug.sh",
     "dev": "yarn build && yarn start",
     "==========================================================4": "",
     "                      utils                               4": "",

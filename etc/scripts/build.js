@@ -18,14 +18,17 @@ class Operation {
 
 		let useSdl = false
 		let useSdlTtf = false
+		let useDebug = false
 
 		if (options) {
 			useSdl = options.useSdl
 			useSdlTtf = options.useSdlTtf
+			useDebug = options.useDebug
 		}
 		else {
 			useSdl = true
 			useSdlTtf = true
+			useDebug = false
 		}
 
 		const config = new CppBuild.Config()
@@ -37,6 +40,19 @@ class Operation {
 		const op = new CppBuild({
 			config,
 			onCreateCmd(cmdBuilder) {
+				if (useDebug) {
+					cmdBuilder.addFlag('g')
+					// optimization level - 0
+					// - apparently, improves debugging support
+					cmdBuilder.addFlag('O0')
+				}
+
+				/* @info
+					- fix linking issues at runtime
+					- -Wl - send commands directly to linker
+				*/
+				cmdBuilder.addFlag('Wl,-rpath,@executable_path/../c_modules/frameworks')
+
 				if (useSdl) {
 					// SDL2
 					config.addInclude('/usr/local/include')
@@ -84,12 +100,16 @@ class Operation {
 			throw new BusinessException(`test NOT found: ${testName}`)
 		}
 
+		const testOptions = {
+			useDebug: true,
+		}
+
 		let buildOp = this.createOp()
 		if (testName === 'test-sdl') {
-			buildOp = this.createOp({ useSdl: true })
+			buildOp = this.createOp({ ...testOptions, useSdl: true })
 		}
 		if (testName === 'test-sdl-ttf') {
-			buildOp = this.createOp({ useSdl: true, useSdlTtf: true })
+			buildOp = this.createOp({ ...testOptions, useSdl: true, useSdlTtf: true })
 		}
 
 		buildOp.config.entrypoint(testFile)

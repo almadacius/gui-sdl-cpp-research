@@ -2,7 +2,7 @@
 
 const { errorHandler: { NodeErrorHandler } } = require('@almadash/shelf')
 
-const { project, InstallSdlTtfOp } = require('./lib')
+const { project, InstallSdlTtfOp, InstallSdlOp } = require('./lib')
 
 // ================================================
 class Operation {
@@ -14,8 +14,19 @@ class Operation {
 
 		project.ensureDirs()
 
-		const sdlTtfOp = new InstallSdlTtfOp()
-		await sdlTtfOp.install()
+		const promises = []
+
+		promises.push(async () => {
+			const op = new InstallSdlOp()
+			await op.install()
+		})
+
+		promises.push(async () => {
+			const op = new InstallSdlTtfOp()
+			await op.install()
+		})
+
+		await Promise.all(promises.map(p => p()))
 	}
 }
 

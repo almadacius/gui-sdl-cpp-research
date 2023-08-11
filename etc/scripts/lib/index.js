@@ -4,6 +4,7 @@
 */
 
 module.exports = {
+	...require('./InstallSdlOp'),
 	...require('./InstallSdlTtfCompileOp'),
 	...require('./InstallSdlTtfOp'),
 	...require('./Project'),
