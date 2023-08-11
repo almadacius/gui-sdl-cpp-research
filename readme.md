@@ -12,6 +12,8 @@ researching standalone gui apps.
 - [SDL2](https://wiki.libsdl.org/SDL2/FrontPage)
   + [api](https://wiki.libsdl.org/SDL2/CategoryAPI)
 
+- [cpp17 filesystem](https://en.cppreference.com/w/cpp/filesystem)
+
 ---
 
 Copyright 2023 Almadash

@@ -8,11 +8,33 @@ using std::function;
 
 // ================================================
 namespace sdlLib {
+  struct State {
+    bool init;
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+  };
+
+  State state;
+
+  void cleanup() {
+    if(state.window) {
+      SDL_DestroyWindow(state.window);
+    }
+    if(state.renderer) {
+      SDL_DestroyRenderer(state.renderer);
+    }
+    if(state.init) {
+      SDL_Quit();
+    }
+  }
+
+  // ================================================
   bool init() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
       SDL_Log("SDL_Init Error: %s\n", SDL_GetError());
       return false;
     }
+    state.init = true;
     return true;
   }
 
@@ -27,10 +49,9 @@ namespace sdlLib {
     );
     if (window == NULL) {
       SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
-      SDL_Quit();
       return NULL;
     }
-
+    state.window = window;
     return window;
   }
 
@@ -42,16 +63,11 @@ namespace sdlLib {
       SDL_Quit();
       return NULL;
     }
-
+    state.renderer = renderer;
     return renderer;
   }
 
-  void cleanup(SDL_Window* window, SDL_Renderer* renderer) {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    SDL_Quit();
-  }
-
+  // ================================================
   void drawLoop(SDL_Renderer* renderer, function<void(SDL_Renderer*)> drawStuff) {
     bool isRunning = true;
 

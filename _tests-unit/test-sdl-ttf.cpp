@@ -1,23 +1,37 @@
 #include <SDL2/SDL.h>
 #include <SDL_ttf.h>
+#include <cstdlib>
+#include <string>
 
-#include "sdl-lib.hpp"
+#include "lib/sdl-lib.hpp"
+#include "lib/sdl-ttf-lib.hpp"
+#include "lib/fs.hpp"
+
+using std::string;
 
 // ================================================
-void drawSquare(SDL_Renderer* renderer) {
-  // red
-  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-  // Clear the window
-  SDL_RenderClear(renderer);
+void cleanup() {
+  sdlTtfLib::cleanup();
+  sdlLib::cleanup();
+}
 
-  // Draw a square
-  SDL_Rect rect = { 200, 150, 100, 100 };
-  SDL_RenderFillRect(renderer, &rect);
+// ================================================
+void update() {
+  // black
+  sdlTtfLib::setColor({ 0, 0, 0 });
+  sdlTtfLib::updateText("this is some rendered text");
+}
+
+void draw(SDL_Renderer* renderer) {
+  sdlTtfLib::render();
 }
 
 // ================================================
 int main(int argc, char* argv[]) {
+  atexit(cleanup);
+
   if (!sdlLib::init() != 0) { return 1; }
+  if (!sdlTtfLib::init() != 0) { return 1; }
 
   SDL_Window* window = sdlLib::createWindow();
   if (window == NULL) { return 1; }
@@ -25,9 +39,15 @@ int main(int argc, char* argv[]) {
   SDL_Renderer* renderer = sdlLib::createRenderer(window);
   if (renderer == NULL) { return 1; }
 
-  sdlLib::drawLoop(renderer, drawSquare);
+  // ================================================
+  fs::init(argv);
+  string fontPath = fs::getAssetPath("tanohe-sans-regular.ttf");
 
-  sdlLib::cleanup(window, renderer);
+  if(!sdlTtfLib::loadFont(fontPath)){ return 1; };
+
+  // ================================================
+  update();
+  sdlLib::drawLoop(renderer, draw);
 
   return 0;
 }
