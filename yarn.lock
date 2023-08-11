@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@almadash/builder@git+ssh://git@bitbucket.org:almadash/builder#0.3.0":
-  version "0.3.0"
-  resolved "git+ssh://git@bitbucket.org:almadash/builder#faa3ef687cc28aa699c1895ec098dcbe22a15be3"
+"@almadash/builder@git+ssh://git@bitbucket.org:almadash/builder#0.3.1":
+  version "0.3.1"
+  resolved "git+ssh://git@bitbucket.org:almadash/builder#5484bf164b47a0d24e9a75f8621083b62a233ddf"
   dependencies:
     "@almadash/shelf" "git+ssh://git@bitbucket.org:almadash/shelf#0.11.1"
-    "@almadash/shelf-node" "git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.19"
+    "@almadash/shelf-node" "git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.20"
     glob "^8.0.3"
 
 "@almadash/eslint-config-basic@git+ssh://git@bitbucket.org:almadash/eslint-config-basic#1.1.5":
@@ -21,14 +21,6 @@
     eslint-plugin-node "^10.0.0"
     eslint-plugin-promise "^4.2.1"
     eslint-plugin-standard "^4.0.1"
-
-"@almadash/shelf-node@git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.19":
-  version "0.8.19"
-  resolved "git+ssh://git@bitbucket.org:almadash/shelf-node#49aaed5335e83cdac8e4952ea338402577c42478"
-  dependencies:
-    "@almadash/shelf" "git+ssh://git@bitbucket.org:almadash/shelf#0.11.11"
-    glob "^7.1.6"
-    semver "^7.3.2"
 
 "@almadash/shelf-node@git+ssh://git@bitbucket.org:almadash/shelf-node#0.8.20":
   version "0.8.20"
