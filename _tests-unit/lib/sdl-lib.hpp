@@ -5,6 +5,7 @@
 #include <functional>
 
 using std::function;
+using std::string;
 
 // ================================================
 namespace sdlLib {
@@ -16,6 +17,7 @@ namespace sdlLib {
 
   State state;
 
+  // ================================================
   void cleanup() {
     if(state.window) {
       SDL_DestroyWindow(state.window);
@@ -28,19 +30,34 @@ namespace sdlLib {
     }
   }
 
+  void logError(string text) {
+    if(text == "") {
+      text = "SDL_Init Error: %s\n";
+    }
+    SDL_Log(text.c_str(), SDL_GetError());
+  }
+
+  // ================================================
+  SDL_Renderer* getRenderer() {
+    return state.renderer;
+  }
+
   // ================================================
   bool init() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-      SDL_Log("SDL_Init Error: %s\n", SDL_GetError());
+      sdlLib::logError("Error [SDL_Init]: %s\n");
       return false;
     }
     state.init = true;
     return true;
   }
 
-  SDL_Window* createWindow() {
+  bool createWindow(string title) {
+    if(title == "") {
+      title = "window: test";
+    }
     SDL_Window* window = SDL_CreateWindow(
-      "Square Renderer",
+      title.c_str(),
       0,
       0,
       800,
@@ -48,27 +65,42 @@ namespace sdlLib {
       SDL_WINDOW_SHOWN
     );
     if (window == NULL) {
-      SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
-      return NULL;
+      sdlLib::logError("Error [SDL_CreateWindow]: %s\n");
+      return false;
     }
     state.window = window;
-    return window;
+    return true;
   }
 
-  SDL_Renderer* createRenderer(SDL_Window* window) {
+  bool createWindow() {
+    return sdlLib::createWindow("");
+  }
+
+  bool createRenderer() {
+    SDL_Window* window = state.window;
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL) {
-      SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-      SDL_DestroyWindow(window);
-      SDL_Quit();
-      return NULL;
+      sdlLib::logError("Error [SDL_CreateRenderer]: %s\n");
+      return false;
     }
     state.renderer = renderer;
-    return renderer;
+    return true;
   }
 
   // ================================================
-  void drawLoop(SDL_Renderer* renderer, function<void(SDL_Renderer*)> drawStuff) {
+  bool create(string windowTitle) {
+    if(!sdlLib::createWindow(windowTitle)){
+      return false;
+    }
+    if(!sdlLib::createRenderer()) {
+      return false;
+    }
+    return true;
+  }
+
+  // ================================================
+  void drawLoop(function<void()> drawStuff) {
+    SDL_Renderer* renderer = sdlLib::getRenderer();
     bool isRunning = true;
 
     while(isRunning) {
@@ -86,7 +118,7 @@ namespace sdlLib {
       SDL_RenderClear(renderer);
 
       // render stuff
-      drawStuff(renderer);
+      drawStuff();
 
       // Render modification
       SDL_RenderPresent(renderer);

@@ -71,7 +71,7 @@ namespace sdlTtfLib {
   }
 
   void updateText(string text) {
-    SDL_Renderer* renderer = sdlLib::state.renderer;
+    SDL_Renderer* renderer = sdlLib::getRenderer();
 
     SDL_Surface* surface = TTF_RenderText_Solid(
       state.font, text.c_str(), state.color
@@ -89,7 +89,7 @@ namespace sdlTtfLib {
   }
 
   void render() {
-    SDL_Renderer* renderer = sdlLib::state.renderer;
+    SDL_Renderer* renderer = sdlLib::getRenderer();
 
     SDL_RenderCopy(renderer, state.texture, NULL, &state.rect);
   }

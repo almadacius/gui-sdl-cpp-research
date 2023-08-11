@@ -22,7 +22,7 @@ void update() {
   sdlTtfLib::updateText("this is some rendered text");
 }
 
-void draw(SDL_Renderer* renderer) {
+void draw() {
   sdlTtfLib::render();
 }
 
@@ -30,14 +30,10 @@ void draw(SDL_Renderer* renderer) {
 int main(int argc, char* argv[]) {
   atexit(cleanup);
 
-  if (!sdlLib::init() != 0) { return 1; }
-  if (!sdlTtfLib::init() != 0) { return 1; }
+  if (!sdlLib::init()) { return 1; }
+  if (!sdlTtfLib::init()) { return 1; }
 
-  SDL_Window* window = sdlLib::createWindow();
-  if (window == NULL) { return 1; }
-
-  SDL_Renderer* renderer = sdlLib::createRenderer(window);
-  if (renderer == NULL) { return 1; }
+  if (!sdlLib::create("test: DRAW TEXT")) { return 1; }
 
   // ================================================
   fs::init(argv);
@@ -47,7 +43,7 @@ int main(int argc, char* argv[]) {
 
   // ================================================
   update();
-  sdlLib::drawLoop(renderer, draw);
+  sdlLib::drawLoop(draw);
 
   return 0;
 }
